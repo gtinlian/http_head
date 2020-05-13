@@ -12,7 +12,9 @@ public:
     int list[HEADR_LEN];  //请求头行首位置
     int list_len;  //请求头行数
     int len;  //请求头限制
+
     http_head():list_len(0),len(2000){}
+
     int head_skip(char *buff, int start) {
         for (int i = start; buff[i] < len; i++) {
             if (buff[i] == '\r') {
@@ -28,6 +30,7 @@ public:
             }
         }
     }   //请求头切割
+
     int head_part( char *buff) {
         int start = 0;
         int i = 0;
@@ -58,7 +61,7 @@ int main() {
                             "Host: mbd.baidu.com\r\n"
                             "Accept-Language: zh-CN,zh;q=0.9,en;q=0.8\r\n\r\n";
     http_head t;
-    FILE *fp = fopen("/root/test","a+");
+    //FILE *fp = fopen("/root/test","a+");
     printf("%ld\n",time(NULL));
     for(int x = 0;x<10000000;x++) {
         t.head_part(buffs);
@@ -67,7 +70,10 @@ int main() {
             //fflush(fp);
         //}
     }
+    //valgrind --tool=memcheck --leak-check=full --show-reachable=yes  /tmp/tmp.jDd3LKrSx0/cmake-build-debug/untitled4
     printf("%ld\n",time(NULL));
+
+    //fclose(fp);
     return 0;
 
 
