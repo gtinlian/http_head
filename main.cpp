@@ -1,17 +1,20 @@
-#include <iostream>
+#include <stdio.h>
 #include <string.h>
-#include <map>
 #include <unistd.h>
+#include <time.h>
 
 #define HEADR_LEN 20
+
 class http_head {
 public:
-    char skp;
-    int list[HEADR_LEN];
-    int list_len;
-    http_head():list_len(0){}
+    char skip;
+    int row_skip[HEADR_LEN];  //冒号位置
+    int list[HEADR_LEN];  //请求头行首位置
+    int list_len;  //请求头行数
+    int len;  //请求头限制
+    http_head():list_len(0),len(2000){}
     int head_skip(char *buff, int start) {
-        for (int i = start; buff[i] != '\n'; i++) {
+        for (int i = start; buff[i] < len; i++) {
             if (buff[i] == '\r') {
                 if (buff[i + 1] == '\n') {
                     if (buff[i + 2] == '\r') {
@@ -46,6 +49,7 @@ public:
     }   //请求头分段
 
 };
+
 int main() {
 
     char buffs[] = "Accept: */*\r\n"
@@ -54,11 +58,17 @@ int main() {
                             "Host: mbd.baidu.com\r\n"
                             "Accept-Language: zh-CN,zh;q=0.9,en;q=0.8\r\n\r\n";
     http_head t;
-    int list[HEADR_LEN];
-    int len = t.head_part(buffs);
-    for(int i = 0;i <= t.list_len;i++) {
-        write(stdout->_fileno,buffs + t.list[i],t.list[i+1] - t.list[i]);
+    FILE *fp = fopen("/root/test","a+");
+    printf("%ld\n",time(NULL));
+    for(int x = 0;x<10000000;x++) {
+        t.head_part(buffs);
+        //for (int i = 0; i <= t.list_len; i++) {
+            //fwrite(buffs + t.list[i], t.list[i + 1] - t.list[i], 1, fp);
+            //fflush(fp);
+        //}
     }
+    printf("%ld\n",time(NULL));
+    return 0;
 
 
 }
